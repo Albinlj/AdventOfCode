@@ -1,0 +1,5 @@
+allow:
+  - read
+
+scripts:
+  test: "deno test ./days/*.ts --watch"
