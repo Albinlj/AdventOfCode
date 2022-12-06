@@ -14,14 +14,18 @@ const parsePairs = (input: string): Pair[] =>
     ) as Pair[];
 
 const part1 = (input: string): any =>
-  parsePairs(input).filter(
-    ([[a1, a2], [b1, b2]]) => (a1 <= b1 && a2 >= b2) || (b1 <= a1 && b2 >= a2),
-  ).length;
+  parsePairs(input)
+    .filter(
+      ([[a1, a2], [b1, b2]]) =>
+        (a1 <= b1 && a2 >= b2) || (b1 <= a1 && b2 >= a2),
+    ).length;
 
 const part2 = (input: string): any =>
-  parsePairs(input).filter(
-    ([[a1, a2], [b1, b2]]) => (a2 >= b1 && a1 <= b2) || (a1 <= b2 && a2 >= b1),
-  ).length;
+  parsePairs(input)
+    .filter(
+      ([[a1, a2], [b1, b2]]) =>
+        (a2 >= b1 && a1 <= b2) || (a1 <= b2 && a2 >= b1),
+    ).length;
 
 Deno.test("part1", () => {
   const input = readFile("day04.input.txt");
@@ -30,7 +34,7 @@ Deno.test("part1", () => {
 
 Deno.test("part2", () => {
   const input = readFile("day04.input.txt");
-  assertEquals(part2(input), 453);
+  assertEquals(part2(input), 919);
 });
 
 Deno.test("example part1", () => {
