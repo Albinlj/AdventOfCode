@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { readFile } from "../utilities.ts";
+import { readExample, readFile, readInput } from "../utilities.ts";
 
 type Stacks = string[];
 type Action = [number, number, number];
@@ -48,23 +48,23 @@ function part2(input: string): any {
 }
 
 Deno.test("parse", () => {
-  const input = readFile("day05.example.txt");
+  const input = readExample(5);
   const [stacks, actions] = parse(input);
   assertEquals(stacks, ["ZN", "MCD", "P"]);
   assertEquals(actions, [[1, 1, 0], [3, 0, 2], [2, 1, 0], [1, 0, 1]]);
 });
 
 Deno.test("part1", () => {
-  const input = readFile("day05.input.txt");
+  const input = readInput(5);
   assertEquals(part1(input), "VCTFTJQCG");
 });
 
 Deno.test("part2", () => {
-  const input = readFile("day05.input.txt");
+  const input = readInput(5);
   assertEquals(part2(input), "GCFGLDNJZ");
 });
 
 Deno.test("example part1", () => {
-  const input = readFile("day05.example.txt");
+  const input = readExample(5);
   assertEquals(part1(input), "CMZ");
 });
