@@ -61,7 +61,6 @@ const part1 = (input: string) => {
       total += size;
     }
 
-    console.log(size);
     return size;
   };
 
@@ -95,7 +94,6 @@ const part2 = (input: string) => {
   const hej = all.sort((a, b) => a - b).find((a, i, arr) =>
     arr.at(-1)! - a <= 40_000_000
   );
-  console.log(hej);
 
   return hej;
 };
