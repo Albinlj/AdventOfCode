@@ -14,8 +14,8 @@ Deno.test("part1", () => {
 });
 
 Deno.test("part2", () => {
-  const example = readInput(9);
-  assertEquals(part2(example), 2557);
+  const input = readInput(9);
+  assertEquals(part2(input, 10), 2557);
 });
 
 type Action = ["U" | "D" | "L" | "R", number];
@@ -68,25 +68,16 @@ function part1(input: string): any {
   return dirs.size;
 }
 
-function part2(input: string): any {
+function part2(input: string, length: number): any {
   const actions = input
     .split("\n").map((line) => {
       const [dir, length] = line.split(" ");
       return [dir, parseInt(length)] as unknown as Action;
     });
 
-  const knots = [
+  const knots = new Array(length).fill(
     [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-  ];
+  );
 
   const dirs = new Set<string>();
 
@@ -108,33 +99,17 @@ function part2(input: string): any {
       }
 
       for (let j = 1; j < knots.length; j++) {
-        const moves = {
-          "2,0": [1, 0],
-          "2,1": [1, 1],
-          "2,2": [1, 1],
-          "1,2": [1, 1],
-          "0,2": [0, 1],
-          "-1,2": [-1, 1],
-          "-2,2": [-1, 1],
-          "-2,1": [-1, 1],
-          "-2,0": [-1, 0],
-          "-2,-1": [-1, -1],
-          "-2,-2": [-1, -1],
-          "-1,-2": [-1, -1],
-          "0,-2": [0, -1],
-          "1,-2": [1, -1],
-          "2,-2": [1, -1],
-          "2,-1": [1, -1],
-        } as any;
+        const [parentX, parentY] = knots[j - 1];
+        const [oldX, oldY] = knots[j];
+        const [deltaX, deltaY] = [parentX - oldX, parentY - oldY];
 
-        const [nhx, nhy] = knots[j - 1];
-        const [otx, oty] = knots[j];
-        const [dx, dy] = [nhx - otx, nhy - oty];
+        const length = Math.abs(deltaX) + Math.abs(deltaY);
+        const [moveX, moveY] =
+          length == 3 || Math.abs(deltaX) == 2 || Math.abs(deltaY) == 2
+            ? [Math.sign(deltaX), Math.sign(deltaY)]
+            : [0, 0];
 
-        const move = dx.toString() + "," + dy.toString();
-        const [mx, my] = moves[move] ?? [0, 0];
-
-        knots[j] = [otx + mx, oty + my];
+        knots[j] = [oldX + moveX, oldY + moveY];
       }
 
       const [tx, ty] = knots.at(-1)!;
