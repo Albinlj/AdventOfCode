@@ -1,26 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { readExample, readInput } from "../utilities.ts";
 
-Deno.test("example", () => {
-  const example = readExample(8);
-  assertEquals(part1(example), 21);
-});
-
-Deno.test("part1", () => {
-  const input = readInput(8);
-  assertEquals(part1(input), 1538);
-});
-
-Deno.test("part2 example", () => {
-  const input = readExample(8);
-  assertEquals(part2(input), 8);
-});
-
-Deno.test("part2", () => {
-  const input = readInput(8);
-  assertEquals(part2(input), 1538);
-});
-
 const part1 = (input: string) => {
   const grid = input.split("\n")
     .map((line) =>
@@ -137,3 +117,23 @@ const part2 = (input: string) => {
   }
   return (scores).sort((a, b) => b - a).at(0);
 };
+
+Deno.test("example", () => {
+  const example = readExample(8);
+  assertEquals(part1(example), 21);
+});
+
+Deno.test("part1", () => {
+  const input = readInput(8);
+  assertEquals(part1(input), 1538);
+});
+
+Deno.test("part2 example", () => {
+  const input = readExample(8);
+  assertEquals(part2(input), 8);
+});
+
+Deno.test("part2", () => {
+  const input = readInput(8);
+  assertEquals(part2(input), 496125);
+});
