@@ -29,11 +29,6 @@ function part1(input: string): number {
     .split("\n\n")
     .map<Monkey>(parseMonkey);
 
-  // console.log(monkeys.map((m) => m.items));
-  // console.log(monkeys.map((m) => m.trueThrow));
-  // console.log(monkeys.map((m) => m.falseThrow));
-  // console.log(monkeys.map((m) => m.divby));
-
   for (let round = 0; round < 20; round++) {
     for (const monkey of monkeys) {
       const { items, operation, divby, trueThrow, falseThrow } = monkey;
@@ -45,31 +40,29 @@ function part1(input: string): number {
         monkey.inspections++;
       }
     }
-    // console.log(monkeys.map((m) => m.items));
   }
-  console.log(monkeys.map((m) => m.items));
-  const [a, b] =
-    (monkeys.map((m) => m.inspections).sort((a, b) => a - b).slice(-2));
+  const [a, b] = (monkeys
+    .map((m) => m.inspections)
+    .sort((a, b) => a - b)
+    .slice(-2));
   return a * b;
 }
 
-const lastNum = (op: string) => parseInt(op.slice(op.lastIndexOf(" ")));
-
 function parseMonkey(lines: string) {
   const [, items, op, test, tr, fa] = lines.split("\n");
-
-  const opnum = lastNum(op);
 
   return {
     items: items.match(/\d+/g)!.map((x) => parseInt(x)),
     operation: op.endsWith("old")
       ? (num: number) => num * num
       : op.includes("*")
-      ? (num: number) => num * opnum
-      : (num: number) => num + opnum,
+      ? (num: number) => num * lastNum(op)
+      : (num: number) => num + lastNum(op),
     divby: lastNum(test),
     trueThrow: lastNum(tr),
     falseThrow: lastNum(fa),
     inspections: 0,
   };
 }
+
+const lastNum = (op: string) => parseInt(op.slice(op.lastIndexOf(" ")));

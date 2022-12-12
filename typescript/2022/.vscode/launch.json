@@ -8,13 +8,14 @@
 			"request": "launch",
 			"name": "Launch Program",
 			"type": "pwa-node",
-			"program": "${workspaceFolder}/days/day09.ts",
+			"program": "${workspaceFolder}/days/day12.ts",
 			"cwd": "${workspaceFolder}",
 			"runtimeExecutable": "/opt/homebrew/bin/deno",
 			"runtimeArgs": [
-				"run",
+				"test",
 				"--inspect-brk",
-				"--allow-all"
+				"--allow-all",
+				"--no-check"
 			],
 			"attachSimplePort": 9229
 		}
