@@ -60,6 +60,6 @@ function part1(input: string): any {
     currentAction = undefined;
   }
 
-  console.log(str);
+  // console.log(str);
   return sum(vals);
 }

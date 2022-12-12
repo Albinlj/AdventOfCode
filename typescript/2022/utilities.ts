@@ -21,3 +21,9 @@ export function dump<T>(obj: T) {
   console.log(obj);
   return obj;
 }
+
+export const findGcd = (arr: number[]):number => {
+
+const _gcd = (a: number, b: number): number => (b === 0 ? a : _gcd(b, a % b));
+  return arr.reduce((a, b) => _gcd(a, b));
+};
