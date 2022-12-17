@@ -1,22 +1,21 @@
-import { green, red } from "https://deno.land/std@0.166.0/fmt/colors.ts";
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { readExample, readInput } from "../utilities.ts";
 
-// Deno.test("example 1", () => {
-//   assertEquals(part1(readExample(16)), 1651);
-// });
+Deno.test("example 1", () => {
+  assertEquals(part1(readExample(16)), 1651);
+});
 
-// Deno.test("part 1", () => {
-//   assertEquals(part1(readInput(16)), 2029);
-// });
+Deno.test("part 1", () => {
+  assertEquals(part1(readInput(16)), 2029);
+});
 
 Deno.test("example 2", () => {
-  assertEquals(part2(readExample(16)), 1707);
+  assertEquals(part2(readExample(16)), 1706);
 });
 
-Deno.test("part 2", () => {
-  assertEquals(part2(readInput(16)), 1707);
-});
+// Deno.test("part 2", () => {
+//   assertEquals(part2(readInput(16)), 2723);
+// });
 
 type Name = string;
 type Valve = {
@@ -31,12 +30,8 @@ function part2(input: string): any {
   const volcano = parseVolcano(input);
   findShortestPaths(volcano);
 
-  console.log(volcano);
-
   const stopsCount = [...volcano.values()].filter((v) => v.flow !== 0).length +
     1; //Including AA
-  console.log(stopsCount);
-
   return recurse({
     paths: [["AA"], ["AA"]],
     waiting: [0, 0],
@@ -44,10 +39,6 @@ function part2(input: string): any {
     pressure: 0,
     time: 26,
   });
-
-  // ELE : [AA, DD, HH, EE]
-  // ELE : [ "AA", "DD", "HH", "EE" ]
-  // YOU : [ "AA", JJ, BB, CC]
 
   function recurse(
     { paths, waiting, pressure, time, flow }: {
@@ -58,18 +49,15 @@ function part2(input: string): any {
       time: number;
     },
   ): number {
-    if (time <= 0) {
-      // console.log(pressure);
-      return pressure;
-    }
+    if (time <= 0) return pressure;
     const activeIndex = waiting.findIndex((tl) => tl === 0);
     const inactiveIndex = 1 - activeIndex;
 
     const path = paths[activeIndex];
     const from = volcano.get(path.at(-1)!)!;
     const newFlow = flow + from.flow;
+    const size = paths[0].length + paths[0].length - 1;
 
-    const size = new Set(paths.flat()).size;
     const noMoreStops = size === stopsCount;
     if (noMoreStops) {
       const path = paths[inactiveIndex];
@@ -94,6 +82,7 @@ function part2(input: string): any {
           const timeUntilNextStop = Math.min(
             myWaitTime,
             waiting[inactiveIndex],
+            time,
           );
 
           return Math.max(
@@ -182,9 +171,10 @@ function findShortestPaths(
     }
 
     from.distances = new Map(
-      [...from.distances.entries()].filter(([a, b]) =>
-        volcano.get(a)?.flow !== 0
-      ),
+      [...from.distances.entries()].filter(([name, distance]) => {
+        const flow = volcano.get(name)!.flow;
+        return flow !== 0;
+      }),
     );
   }
 }

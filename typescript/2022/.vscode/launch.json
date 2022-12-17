@@ -4,11 +4,12 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
+
 		{
 			"request": "launch",
 			"name": "Launch Program",
 			"type": "pwa-node",
-			"program": "${workspaceFolder}/days/day12.ts",
+			"program": "${workspaceFolder}/days/day16.ts",
 			"cwd": "${workspaceFolder}",
 			"runtimeExecutable": "/opt/homebrew/bin/deno",
 			"runtimeArgs": [
