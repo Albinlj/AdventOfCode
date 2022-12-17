@@ -118,7 +118,7 @@ const part2 = (input: string) => {
   return (scores).sort((a, b) => b - a).at(0);
 };
 
-Deno.test("example", () => {
+Deno.test("example 1", () => {
   const example = readExample(8);
   assertEquals(part1(example), 21);
 });
@@ -128,7 +128,7 @@ Deno.test("part1", () => {
   assertEquals(part1(input), 1538);
 });
 
-Deno.test("part2 example", () => {
+Deno.test("example 2", () => {
   const input = readExample(8);
   assertEquals(part2(input), 8);
 });

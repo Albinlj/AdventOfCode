@@ -33,22 +33,22 @@ const getPriority = (item?: string) => {
   return char > 96 ? char - 96 : 27 + char - 65;
 };
 
-Deno.test("example part1", () => {
+Deno.test("example 1", () => {
   const input = readFile("day03.example.txt");
   assertEquals(part1(input), 157);
 });
 
-Deno.test("part1", () => {
+Deno.test("part 1", () => {
   const input = readFile("day03.input.txt");
   assertEquals(part1(input), 7746);
 });
 
-Deno.test("example part22", () => {
+Deno.test("example 2", () => {
   const input = readFile("day03.example.txt");
   assertEquals(part2(input), 70);
 });
 
-Deno.test("part2", () => {
+Deno.test("part 2", () => {
   const input = readFile("day03.input.txt");
   assertEquals(part2(input), 2604);
 });

@@ -55,22 +55,22 @@ const roundScore1 = ([elf, you]: Round) => {
   return outcomeScore[elf + you] + pickScore;
 };
 
-Deno.test("part1", () => {
+Deno.test("part 1", () => {
   const input = readFile("day02.input.txt");
   assertEquals(part1(input), 10718);
 });
 
-Deno.test("part2", () => {
+Deno.test("part 2", () => {
   const input = readFile("./day02.input.txt");
   assertEquals(part2(input), 14652);
 });
 
-Deno.test("example part1", () => {
+Deno.test("example 1", () => {
   const input = readFile("./day02.example.txt");
   assertEquals(part1(input), 15);
 });
 
-Deno.test("example part2", () => {
+Deno.test("example 2", () => {
   const input = readFile("./day02.example.txt");
   assertEquals(part2(input), 12);
 });

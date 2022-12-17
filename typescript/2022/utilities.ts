@@ -18,7 +18,7 @@ export function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
 }
 
 export function dump<T>(obj: T) {
-  console.log(obj);
+  // console.log(obj);
   return obj;
 }
 
@@ -26,4 +26,16 @@ export const findGcd = (arr: number[]):number => {
 
 const _gcd = (a: number, b: number): number => (b === 0 ? a : _gcd(b, a % b));
   return arr.reduce((a, b) => _gcd(a, b));
+};
+
+
+declare global {
+  interface Array<T> {
+    dump(): Array<T>;
+  }
+}
+
+Array.prototype.dump = function () {
+  // console.log(this);
+  return this;
 };

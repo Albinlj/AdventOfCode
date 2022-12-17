@@ -37,12 +37,12 @@ Deno.test("part2", () => {
   assertEquals(part2(input), 919);
 });
 
-Deno.test("example part1", () => {
+Deno.test("example 1", () => {
   const input = readFile("day04.example.txt");
   assertEquals(part1(input), 2);
 });
 
-Deno.test("example part2", () => {
+Deno.test("example 2", () => {
   const input = readFile("day04.example.txt");
   assertEquals(part2(input), 4);
 });

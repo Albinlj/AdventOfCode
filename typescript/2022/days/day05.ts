@@ -64,7 +64,7 @@ Deno.test("part2", () => {
   assertEquals(part2(input), "GCFGLDNJZ");
 });
 
-Deno.test("example part1", () => {
+Deno.test(" part1", () => {
   const input = readExample(5);
   assertEquals(part1(input), "CMZ");
 });
