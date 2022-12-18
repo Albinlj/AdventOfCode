@@ -13,6 +13,10 @@ Deno.test("example 2", () => {
   assertEquals(part2(readExample(18)), 58);
 });
 
+Deno.test("part 2", () => {
+  assertEquals(part2(readInput(18)), 2556);
+});
+
 type Coord = [number, number, number];
 
 function part2(input: string): any {
@@ -36,7 +40,6 @@ function part2(input: string): any {
     [Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity],
   );
   const [minX, minY, minZ, maxX, maxY, maxZ] = minMax;
-  console.log(minMax);
 
   const pointsSet = new Set(input.split("\n"));
   let totalSurfaceArea = 0;
@@ -45,11 +48,9 @@ function part2(input: string): any {
   const candidates: Coord[] = [[0, 0, 0]];
 
   while (candidates.length > 0) {
-    // console.log(candidates.length);
     const [x, y, z] = candidates.pop()!;
     visited.add([x, y, z].join(","));
 
-    console.log([x, y, z]);
     const neighbors = [
       [-1, 0, 0],
       [1, 0, 0],
@@ -79,9 +80,9 @@ function part2(input: string): any {
         nZ - 1 <= maxZ
       ) {
         candidates.push(neighborCoord);
+        visited.add(str);
       }
     }
-    console.log(visited.size);
   }
 
   return totalSurfaceArea;
