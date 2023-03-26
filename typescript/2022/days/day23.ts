@@ -1,19 +1,92 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { map } from "https://deno.land/x/fae@v1.1.1/map.ts";
-import { readExample, readInput } from "../utilities.ts";
-
-Deno.test("example 1", () => {
-  assertEquals(part1(readInput(23)), 110);
-});
+import { readInput } from "../utilities.ts";
 
 // Deno.test("part 1", () => {
-//   assertEquals(part1(readInput(22)), 103224);
+//   assertEquals(part1(readInput(23)), 110);
 // });
+
+// Deno.test("part 2", () => {
+//   assertEquals(part2(readInput(23)), Infinity);
+// });
+
+const part2 = (input: string) => {
+  let elves = parseElves(input);
+
+  const dirs = [
+    [
+      [-1, -1],
+      [0, -1],
+      [1, -1],
+    ],
+    [
+      [-1, 1],
+      [0, 1],
+      [1, 1],
+    ],
+    [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+    ],
+    [
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ],
+  ];
+
+  const moves = new Map();
+
+  for (let i = 1; i < Infinity; i++) {
+    // elves:
+    for (const elf of elves.values()) {
+      const [x, y] = elf.split(",").map((a) => parseInt(a));
+
+      const openDirs = dirs.map((testPositions) =>
+        testPositions.every(
+          ([testX, testY]) => {
+            const testCoord = [x + testX, y + testY].join(",");
+            return !elves.includes(testCoord);
+          },
+        )
+      );
+
+      if (openDirs.every((a) => a) || openDirs.every((a) => !a)) {
+        moves.set(elf, elf);
+      } else {
+        const dirIndex = openDirs.findIndex((a) => a);
+
+        const [a, b] = dirs[dirIndex][1];
+
+        moves.set(
+          elf,
+          [x + a, y + b].join(","),
+        );
+      }
+    }
+
+    const multiples = [...moves.values()]
+      .filter(
+        (dest, i, arr) => arr.findIndex((destA) => destA === dest) !== i,
+      );
+
+    const newElves = [...moves.entries()].map(([elf, dest]) =>
+      (multiples.includes(dest)) ? elf : dest
+    );
+
+    if (newElves.every((n, i) => elves[i] === n)) {
+      return i;
+    }
+
+    elves = newElves;
+    moves.clear();
+
+    dirs.push(dirs.shift()!);
+  }
+};
 
 const part1 = (input: string) => {
   let elves = parseElves(input);
-
-  console.log(elves);
 
   const dirs = [
     [
@@ -69,20 +142,14 @@ const part1 = (input: string) => {
       }
     }
 
-    // console.log(moves);
-
     const multiples = [...moves.values()]
       .filter(
         (dest, i, arr) => arr.findIndex((destA) => destA === dest) !== i,
       );
-    // console.log(multiples);
-    // console.log(multiples);
 
     elves = [...moves.entries()].map(([elf, dest]) =>
       (multiples.includes(dest)) ? elf : dest
     );
-
-    // console.log(elves);
 
     dirs.push(dirs.shift()!);
   }
