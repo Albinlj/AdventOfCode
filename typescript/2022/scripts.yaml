@@ -2,4 +2,4 @@ allow:
   - read
 
 scripts:
-  test: "deno test ./days/day16*.ts --watch --no-check"
+  test: "deno test ./days/day24.ts --watch --no-check"

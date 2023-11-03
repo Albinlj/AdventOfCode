@@ -1,115 +1,101 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { readExample, readInput } from "../utilities.ts";
-import { range, rangeUntil, zip } from "https://deno.land/x/fae@v1.1.1/mod.ts";
+import { readInput } from "../utilities.ts";
+import { rangeUntil, zip } from "https://deno.land/x/fae@v1.1.1/mod.ts";
+import { green, red } from "https://deno.land/std@0.166.0/fmt/colors.ts";
 
 // Deno.test("example 1", () => {
 //   assertEquals(part1(readExample(22)), 6032);
 // });
 
-// Deno.test("input 1", () => {
+// Deno.test("part 1", () => {
 //   assertEquals(part1(readInput(22)), 103224);
 // });
 
-Deno.test("example 2", () => {
+Deno.test("part 2", () => {
   assertEquals(part2(readInput(22)), 5031);
 });
 
 //#region
 
 const ea = zip(
-  zip(rangeUntil(50, 100), Array(50).fill(-1)),
-  zip(Array(50).fill(0), rangeUntil(150, 200))
-    .map((a) => [...a, 0]),
+  rangeUntil(50, 100).map((x) => [x, 0, 3]),
+  rangeUntil(150, 200).map((y) => [0, y, 0]),
 );
 
 const fa = zip(
-  zip(rangeUntil(100, 150), Array(50).fill(-1)),
-  zip(rangeUntil(0, 50), Array(50).fill(199))
-    .map((a) => [...a, 3]),
+  rangeUntil(100, 150).map((x) => [x, 0, 3]),
+  rangeUntil(0, 50).map((x) => [x, 199, 3]),
 );
 
 const fc = zip(
-  zip(Array(50).fill(150), rangeUntil(0, 50)),
-  zip(Array(50).fill(99), rangeUntil(100, 150).toReversed())
-    .map((a) => [...a, 2]),
+  rangeUntil(0, 50).map((y) => [149, y, 0]),
+  rangeUntil(100, 150).toReversed().map((y) => [99, y, 2]),
 );
 
 const fd = zip(
-  zip(rangeUntil(100, 150), Array(50).fill(50)),
-  zip(Array(50).fill(99), rangeUntil(50, 100))
-    .map((a) => [...a, 2]),
+  rangeUntil(100, 150).map((x) => [x, 49, 1]),
+  rangeUntil(50, 100).map((y) => [99, y, 2]),
 );
 
 const df = zip(
-  zip(Array(50).fill(100), rangeUntil(50, 100)),
-  zip(rangeUntil(100, 150), Array(50).fill(49))
-    .map((a) => [...a, 3]),
+  rangeUntil(50, 100).map((y) => [99, y, 0]),
+  rangeUntil(100, 150).map((x) => [x, 49, 3]),
 );
 
 const cf = zip(
-  zip(Array(50).fill(100), rangeUntil(100, 150)),
-  zip(Array(50).fill(149), rangeUntil(0, 50).toReversed())
-    .map((a) => [...a, 2]),
+  rangeUntil(100, 150).map((y) => [99, y, 0]),
+  rangeUntil(0, 50).toReversed().map((y) => [149, y, 2]),
 );
 
 const ca = zip(
-  zip(rangeUntil(50, 100), Array(50).fill(150)),
-  zip(Array(50).fill(49), rangeUntil(150, 200))
-    .map((a) => [...a, 3]),
+  rangeUntil(50, 100).map((x) => [x, 149, 1]),
+  rangeUntil(150, 200).map((y) => [49, y, 3]),
 );
 
 const ac = zip(
-  zip(Array(50).fill(50), rangeUntil(150, 200)),
-  zip(rangeUntil(50, 100), Array(50).fill(149))
-    .map((a) => [...a, 3]),
+  rangeUntil(150, 200).map((y) => [49, y, 0]),
+  rangeUntil(50, 100).map((x) => [x, 149, 3]),
 );
 
 const af = zip(
-  zip(rangeUntil(0, 50), Array(50).fill(200)),
-  zip(rangeUntil(100, 150), Array(50).fill(0))
-    .map((a) => [...a, 1]),
+  rangeUntil(0, 50).map((x) => [x, 199, 1]),
+  rangeUntil(100, 150).map((x) => [x, 0, 1]),
 );
 
 const ae = zip(
-  zip(Array(50).fill(-1), rangeUntil(150, 200)),
-  zip(rangeUntil(50, 100), Array(50).fill(0))
-    .map((a) => [...a, 1]),
+  rangeUntil(150, 200).map((y) => [0, y, 2]),
+  rangeUntil(50, 100).map((x) => [x, 0, 1]),
 );
 
 const be = zip(
-  zip(Array(50).fill(-1), rangeUntil(100, 150)),
-  zip(Array(50).fill(50), rangeUntil(0, 50).toReversed())
-    .map((a) => [...a, 0]),
+  rangeUntil(100, 150).map((y) => [0, y, 2]),
+  rangeUntil(0, 50).toReversed().map((y) => [50, y, 0]),
 );
 
 const bd = zip(
-  zip(rangeUntil(0, 50), Array(50).fill(99)),
-  zip(Array(50).fill(50), rangeUntil(50, 100))
-    .map((a) => [...a, 0]),
+  rangeUntil(0, 50).map((x) => [x, 100, 3]),
+  rangeUntil(50, 100).map((y) => [50, y, 0]),
 );
 
 const db = zip(
-  zip(Array(50).fill(49), rangeUntil(50, 100)),
-  zip(rangeUntil(0, 50), Array(50).fill(100))
-    .map((a) => [...a, 1]),
+  rangeUntil(50, 100).map((y) => [50, y, 2]),
+  rangeUntil(0, 50).map((x) => [x, 100, 1]),
 );
 
 const eb = zip(
-  zip(Array(50).fill(49), rangeUntil(0, 50)),
-  zip(Array(50).fill(0), rangeUntil(100, 150).toReversed())
-    .map((a) => [...a, 2]),
+  rangeUntil(0, 50).map((y) => [50, y, 2]),
+  rangeUntil(100, 150).toReversed().map((y) => [0, y, 2]),
 );
 
 const hej = new Map(
   [ea, fa, fc, fd, df, cf, ca, ac, af, ae, be, bd, db, eb]
     .flat()
     .map(
-      ([[x, y], b]) => [x + "," + y, b],
+      ([a, b]) => [a.join(), b],
     ),
 );
 
 //#endregion
-// console.log(hej);
 
 function part2(input: string): any {
   const [rawMap, [rawPath]] = input.split("\n\n").map((line) =>
@@ -120,6 +106,12 @@ function part2(input: string): any {
   // 20104 low
   // 18465 low
   // 685119 high
+  // 188082 no
+
+  //  ef
+  //  d
+  // bc
+  // a
 
   const hasch = new Set();
   const width = Math.max(...rawMap.map((line) => line.length));
@@ -132,8 +124,6 @@ function part2(input: string): any {
     }
   }
 
-  console.log(hasch);
-
   const walks = rawPath.match(/\d+/g)?.map(Number)!;
   const turns = rawPath.match(/[RL]+/g)!;
 
@@ -143,8 +133,16 @@ function part2(input: string): any {
 
   for (let i = 0; i < walks.length; i++) {
     const length = walks[i];
+    const lookMin = 116;
+    const lookMax = 118;
+    if (i <= lookMax && i >= lookMin) {
+      console.log(red(length.toString()));
+    }
 
     for (let step = 1; step <= length; step++) {
+      if (i <= lookMax && i >= lookMin) {
+        console.log(x, y, facing);
+      }
       const dx = facing === 0 ? 1 : facing === 2 ? -1 : 0;
       const dy = facing === 1 ? 1 : facing === 3 ? -1 : 0;
 
@@ -152,18 +150,25 @@ function part2(input: string): any {
       let newy = y;
       let newFacing = facing;
 
-      newx += dx;
-      newy += dy;
-
-      const wrapped = hej.get(x + "," + y);
+      const wrapped = hej.get([x, y, facing].join());
       if (wrapped) {
+        console.log(green(i.toString()));
+        if (i <= lookMax && i >= lookMin) {
+          console.log(wrapped);
+        }
         const [wrappedx, wrappedy, orient] = wrapped;
         newx = wrappedx;
         newy = wrappedy;
         newFacing = orient;
+      } else {
+        newx += dx;
+        newy += dy;
       }
 
-      if (hasch.has(x + "," + y)) {
+      if (hasch.has(newx + "," + newy)) {
+        if (i <= lookMax && i >= lookMin) {
+          console.log("stop!");
+        }
         break;
       }
 
@@ -177,8 +182,6 @@ function part2(input: string): any {
       facing = ((facing + (turn === "R" ? 1 : -1)) + 4) % 4;
     }
   }
-
-  console.log(x, y, facing);
 
   return (y + 1) * 1000 + (x + 1) * 4 + facing;
 }

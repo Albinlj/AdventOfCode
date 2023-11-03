@@ -1,0 +1,21 @@
+{
+  "name": "aoc2019",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/ramda": "^0.29.6",
+    "ramda": "^0.29.1"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 40
+  }
+}

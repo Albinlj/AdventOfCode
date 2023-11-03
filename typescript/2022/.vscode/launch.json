@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Launch Program",
 			"type": "pwa-node",
-			"program": "${workspaceFolder}/days/day16.ts",
+			"program": "${workspaceFolder}/days/day24.ts",
 			"cwd": "${workspaceFolder}",
 			"runtimeExecutable": "/opt/homebrew/bin/deno",
 			"runtimeArgs": [

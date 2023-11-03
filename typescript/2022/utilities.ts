@@ -18,7 +18,7 @@ export function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
 }
 
 export function dump<T>(obj: T) {
-  // console.log(obj);
+  console.log(obj);
   return obj;
 }
 
