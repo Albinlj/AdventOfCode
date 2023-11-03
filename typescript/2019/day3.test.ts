@@ -8,7 +8,7 @@ import {
 } from 'ramda'
 
 const input = await Bun.file(
-  'day1.input.txt'
+  'day3.input.txt'
 ).text()
 
 const part1 = (input: string) => {
