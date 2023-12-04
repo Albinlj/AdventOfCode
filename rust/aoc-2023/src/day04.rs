@@ -33,45 +33,33 @@ fn parse_cards(input: &str) -> Vec<Card> {
 fn part1(input: &str) -> u32 {
     let cards = parse_cards(input);
 
-    let mut sum = 0;
-
-    for card in cards {
-        let mut wincount: u32 = 0;
-
-        for winning in &card.winning_numbers {
-            if (card.your_numbers.contains(&winning)) {
-                wincount += 1;
-            }
-        }
-
-        if (wincount != 0) {
-            sum += 2_u32.pow(wincount - 1)
-        }
-    }
-
-    sum
+    cards
+        .iter()
+        .map(|card| {
+            card.winning_numbers
+                .iter()
+                .filter(|winning_number| card.your_numbers.contains(&winning_number))
+                .count() as u32
+        })
+        .map(|wins| if (wins == 0) { 0 } else { 2_u32.pow(wins - 1) })
+        .sum()
 }
 
 fn part2(input: &str) -> u32 {
     let cards = parse_cards(input);
-
     let mut card_counts: Vec<u32> = cards.iter().map(|_| 1).collect();
 
-    for (i, card) in cards.iter().enumerate() {
-        let mut wincount: u32 = 0;
-
-        for winning in &card.winning_numbers {
-            if (card.your_numbers.contains(&winning)) {
-                wincount += 1;
-            }
-        }
+    cards.iter().enumerate().for_each(|(i, card)| {
+        let wincount = card
+            .winning_numbers
+            .iter()
+            .filter(|winning_number| card.your_numbers.contains(&winning_number))
+            .count() as u32;
 
         for next_card in i..(i + wincount as usize) {
-            if (next_card + 1 < card_counts.len()) {
-                card_counts[next_card + 1] += card_counts[i];
-            }
+            card_counts[next_card + 1] += card_counts[i];
         }
-    }
+    });
 
     card_counts.iter().sum()
 }
