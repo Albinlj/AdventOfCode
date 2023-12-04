@@ -159,6 +159,6 @@ mod tests {
         assert_eq!(part1(real_input), 556367);
 
         assert_eq!(part2(EXAMPLE_INPUT1), 467835);
-        assert_eq!(part2(real_input), 556367);
+        assert_eq!(part2(real_input), 89471771);
     }
 }
