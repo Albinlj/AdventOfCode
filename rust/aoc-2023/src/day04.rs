@@ -5,32 +5,36 @@ struct Card {
     your_numbers: Vec<u32>,
 }
 
-fn part1(input: &str) -> u32 {
-    let cards = input
+fn parse_cards(input: &str) -> Vec<Card> {
+    input
         .trim()
         .lines()
         .map(|line| {
             let (card, numbers) = line.split_once(':').unwrap();
-
             let (winning, yours) = numbers.split_once('|').unwrap();
+
+            fn split_numbers(input: &str) -> Vec<u32> {
+                input
+                    .trim()
+                    .split_whitespace()
+                    .map(|num| num.parse().unwrap())
+                    .collect()
+            }
 
             Card {
                 id: 1,
-                winning_numbers: winning
-                    .trim()
-                    .split_whitespace()
-                    .map(|num| num.parse().unwrap())
-                    .collect(),
-                your_numbers: yours
-                    .trim()
-                    .split_whitespace()
-                    .map(|num| num.parse().unwrap())
-                    .collect::<Vec<u32>>(),
+                winning_numbers: split_numbers(winning),
+                your_numbers: split_numbers(yours),
             }
         })
-        .collect::<Vec<Card>>();
+        .collect()
+}
+
+fn part1(input: &str) -> u32 {
+    let cards = parse_cards(input);
 
     let mut sum = 0;
+
     for card in cards {
         let mut wincount: u32 = 0;
 
@@ -40,42 +44,18 @@ fn part1(input: &str) -> u32 {
             }
         }
 
-        if (wincount == 0) {
-            continue;
+        if (wincount != 0) {
+            sum += 2_u32.pow(wincount - 1)
         }
-
-        sum += 2_u32.pow(wincount - 1)
     }
 
     sum
 }
 
 fn part2(input: &str) -> u32 {
-    let cards = input
-        .trim()
-        .lines()
-        .map(|line| {
-            let (card, numbers) = line.split_once(':').unwrap();
+    let cards = parse_cards(input);
 
-            let (winning, yours) = numbers.split_once('|').unwrap();
-
-            Card {
-                id: 1,
-                winning_numbers: winning
-                    .trim()
-                    .split_whitespace()
-                    .map(|num| num.parse().unwrap())
-                    .collect(),
-                your_numbers: yours
-                    .trim()
-                    .split_whitespace()
-                    .map(|num| num.parse().unwrap())
-                    .collect::<Vec<u32>>(),
-            }
-        })
-        .collect::<Vec<Card>>();
-
-    let mut amounts: Vec<u32> = cards.iter().map(|_| 1).collect();
+    let mut card_counts: Vec<u32> = cards.iter().map(|_| 1).collect();
 
     for (i, card) in cards.iter().enumerate() {
         let mut wincount: u32 = 0;
@@ -86,18 +66,14 @@ fn part2(input: &str) -> u32 {
             }
         }
 
-        for cp in i..(i + wincount as usize) {
-            if (cp + 1 < amounts.len()) {
-                amounts[cp + 1] += amounts[i];
+        for next_card in i..(i + wincount as usize) {
+            if (next_card + 1 < card_counts.len()) {
+                card_counts[next_card + 1] += card_counts[i];
             }
-            // dbg!(cp);
         }
-
-        dbg!(&amounts);
     }
-    dbg!(&amounts);
 
-    amounts.iter().sum()
+    card_counts.iter().sum()
 }
 
 #[cfg(test)]
@@ -105,7 +81,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn example1() {
+    fn day() {
         const EXAMPLE_INPUT1: &'static str = r#"
 Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -120,6 +96,6 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
         assert_eq!(part1(real_input), 21821);
 
         assert_eq!(part2(EXAMPLE_INPUT1), 30);
-        assert_eq!(part2(real_input), 21821);
+        assert_eq!(part2(real_input), 5539496);
     }
 }
