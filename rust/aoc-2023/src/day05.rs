@@ -36,58 +36,43 @@ struct Range {
 impl FromStr for Range {
     type Err = ParsePointError;
 
-    fn from_str(line: &str) -> Result<Range, ParsePointError> {
-        let stuff: Vec<u32> = line.split(' ');
-
-
+    fn from_str(
+        line: &str,
+    ) -> Result<Range, ParsePointError>
+    {
+        let stuff: Vec<u32> =
+            line.split(' ');
 
         Ok(Range {
-            source_range_start: stuff.next().unwrap(),
-            destination_range_start: stuff.next().unwrap(),
-            range_size: stuff.next().unwrap(),
+            source_range_start: stuff
+                .next()
+                .unwrap(),
+            destination_range_start:
+                stuff.next().unwrap(),
+            range_size: stuff
+                .next()
+                .unwrap(),
         })
     }
 }
-
-// fn part1(input: &str) -> u32 {}
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
     fn map() {
-        const SEED_TO_SOIL_MAP: &'static str = r#"
+        const SEED_TO_SOIL_MAP:
+            &'static str = r#"
 seed-to-soil map:
 50 98 2
 52 50 48
 "#;
-
-        // let map: Map = SEED_TO_SOIL_MAP.parse();
-
-        // assert_eq!(
-        //     map,
-        //     Map {
-        //         from: "seed",
-        //         to: "soil",
-        //         ranges: vec![
-        //             Range {
-        //                 destination_range_start: 50,
-        //                 source_range_start: 98,
-        //                 range_size: 2
-        //             },
-        //             Range {
-        //                 destination_range_start: 52,
-        //                 source_range_start: 50,
-        //                 range_size: 40
-        //             },
-        //         ]
-        //     }
-        // );
     }
 
     #[test]
     fn day() {
-        const EXAMPLE_INPUT1: &'static str = r#"
+        const EXAMPLE_INPUT1:
+            &'static str = r#"
 seeds: 79 14 55 13
 
 seed-to-soil map:
@@ -123,7 +108,9 @@ humidity-to-location map:
 56 93 4
 "#;
 
-        let real_input = include_str!("../inputs/day04.txt");
+        let real_input = include_str!(
+            "../inputs/day04.txt"
+        );
         // assert_eq!(part1(EXAMPLE_INPUT1), 35);
         // assert_eq!(part1(real_input), 21821);
 
