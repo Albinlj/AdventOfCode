@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use std::str::FromStr;
 
 #[derive(Debug)]
@@ -7,25 +8,6 @@ struct Map {
     ranges: Vec<Range>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
-struct ParsePointError;
-
-// impl FromStr for Map {
-//     type Err = ParsePointError;
-
-//     fn from_str(s: &str) -> Result<Self, Self::Err> {
-//         let (header, ranges) = s.trim().split_once('\n').unwrap();
-//         let (from, to) = header
-//             .strip_suffix(" map:")
-//             .and_then(|s| s.split_once("-to-"))
-//             .unwrap();
-
-//         let ranges = ranges.lines().map(|line| line.parse()).collect();
-
-//         Ok(Map { from, to, ranges })
-//     }
-// }
-
 #[derive(Debug)]
 struct Range {
     source_range_start: u32,
@@ -33,41 +15,89 @@ struct Range {
     range_size: u32,
 }
 
-impl FromStr for Range {
-    type Err = ParsePointError;
+fn part1(input: &str) -> u32 {
+    let (seeds, maps) = input
+        .trim()
+        .split_once("\n\n")
+        .unwrap();
 
-    fn from_str(
-        line: &str,
-    ) -> Result<Range, ParsePointError>
-    {
-        let stuff: Vec<u32> =
-            line.split(' ');
-
-        Ok(Range {
-            source_range_start: stuff
-                .next()
-                .unwrap(),
-            destination_range_start:
-                stuff.next().unwrap(),
-            range_size: stuff
-                .next()
-                .unwrap(),
+    let seeds = seeds
+        .strip_prefix("seeds: ")
+        .unwrap()
+        .split_whitespace()
+        .map(|num| {
+            num.parse::<u32>().unwrap()
         })
-    }
+        .collect_vec();
+
+    let maps = maps
+        .split("\n\n")
+        .map(|section| {
+            let (header, rows) =
+                section
+                    .split_once('\n')
+                    .unwrap();
+
+            let (from, to) = header
+                .strip_suffix(" map:")
+                .and_then(|a| {
+                    a.split_once("-to-")
+                })
+                .unwrap();
+
+            let ranges = rows.lines().map(|line| line.split_whitespace()).map(|mut a| Range {
+                source_range_start: a.next().unwrap().parse().unwrap(),
+                destination_range_start: a.next().unwrap().parse().unwrap(),
+                range_size: a.next().unwrap().parse().unwrap(),
+            }).collect_vec();
+
+            let map = Map { from: from.to_string(), to:to.to_string(), ranges };
+
+
+
+            map
+        })
+        .collect_vec();
+
+    let locations = seeds
+        .iter()
+        .map(|seed| {})
+        .collect_vec();
+
+    dbg!(locations);
+
+    2
+}
+
+fn do_the_stuff(
+    from: &str,
+    number: u32,
+    maps: &Vec<Map>,
+) -> ( u32, &str) {
+    let map = &maps
+        .iter()
+        .find(|map| map.from == from)
+        .unwrap();
+
+    let dit = &map.ranges.iter().find(
+        |range| {
+            range.source_range_start
+                <= number &&  number <=range.source_range_start + range.range_size 
+        },
+    );
+
+    // let num = match dit {
+    //     Some() => {},
+    //     None => {},
+    // };
+    let num = 32;
+
+    (num,&map.to)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn map() {
-        const SEED_TO_SOIL_MAP:
-            &'static str = r#"
-seed-to-soil map:
-50 98 2
-52 50 48
-"#;
-    }
 
     #[test]
     fn day() {
@@ -109,9 +139,13 @@ humidity-to-location map:
 "#;
 
         let real_input = include_str!(
-            "../inputs/day04.txt"
+            "../inputs/day05.txt"
         );
-        // assert_eq!(part1(EXAMPLE_INPUT1), 35);
+
+        assert_eq!(
+            part1(EXAMPLE_INPUT1),
+            35
+        );
         // assert_eq!(part1(real_input), 21821);
 
         // assert_eq!(part2(EXAMPLE_INPUT1), 30);
