@@ -16,55 +16,61 @@ struct Range {
 }
 
 fn part1(input: &str) -> u32 {
-    let (seeds, maps) = input
-        .trim()
-        .split_once("\n\n")
-        .unwrap();
+    let (seeds, maps) =
+        input.trim().split_once("\n\n").unwrap();
 
     let seeds = seeds
         .strip_prefix("seeds: ")
         .unwrap()
         .split_whitespace()
-        .map(|num| {
-            num.parse::<u32>().unwrap()
-        })
+        .map(|num| num.parse::<u32>().unwrap())
         .collect_vec();
 
     let maps = maps
         .split("\n\n")
         .map(|section| {
             let (header, rows) =
-                section
-                    .split_once('\n')
-                    .unwrap();
+                section.split_once('\n').unwrap();
 
             let (from, to) = header
                 .strip_suffix(" map:")
-                .and_then(|a| {
-                    a.split_once("-to-")
-                })
+                .and_then(|a| a.split_once("-to-"))
                 .unwrap();
 
-            let ranges = rows.lines().map(|line| line.split_whitespace()).map(|mut a| Range {
-                source_range_start: a.next().unwrap().parse().unwrap(),
-                destination_range_start: a.next().unwrap().parse().unwrap(),
-                range_size: a.next().unwrap().parse().unwrap(),
-            }).collect_vec();
+            let ranges = rows
+                .lines()
+                .map(|line| line.split_whitespace())
+                .map(|mut a| Range {
+                    source_range_start: a
+                        .next()
+                        .unwrap()
+                        .parse()
+                        .unwrap(),
+                    destination_range_start: a
+                        .next()
+                        .unwrap()
+                        .parse()
+                        .unwrap(),
+                    range_size: a
+                        .next()
+                        .unwrap()
+                        .parse()
+                        .unwrap(),
+                })
+                .collect_vec();
 
-            let map = Map { from: from.to_string(), to:to.to_string(), ranges };
-
-
+            let map = Map {
+                from: from.to_string(),
+                to: to.to_string(),
+                ranges,
+            };
 
             map
         })
         .collect_vec();
 
-    let locations = seeds
-        .iter()
-        .map(|seed| {})
-        .collect_vec();
-
-    dbg!(locations);
+    let locations =
+        seeds.iter().map(|seed| {}).collect_vec();
 
     2
 }
@@ -73,18 +79,16 @@ fn do_the_stuff(
     from: &str,
     number: u32,
     maps: &Vec<Map>,
-) -> ( u32, &str) {
-    let map = &maps
-        .iter()
-        .find(|map| map.from == from)
-        .unwrap();
+) -> (u32, &str) {
+    let map =
+        &maps.iter().find(|map| map.from == from).unwrap();
 
-    let dit = &map.ranges.iter().find(
-        |range| {
-            range.source_range_start
-                <= number &&  number <=range.source_range_start + range.range_size 
-        },
-    );
+    let dit = &map.ranges.iter().find(|range| {
+        range.source_range_start <= number
+            && number
+                <= range.source_range_start
+                    + range.range_size
+    });
 
     // let num = match dit {
     //     Some() => {},
@@ -92,7 +96,7 @@ fn do_the_stuff(
     // };
     let num = 32;
 
-    (num,&map.to)
+    (num, &map.to)
 }
 
 #[cfg(test)]
@@ -101,8 +105,7 @@ mod tests {
 
     #[test]
     fn day() {
-        const EXAMPLE_INPUT1:
-            &'static str = r#"
+        const EXAMPLE_INPUT1: &'static str = r#"
 seeds: 79 14 55 13
 
 seed-to-soil map:
@@ -138,14 +141,10 @@ humidity-to-location map:
 56 93 4
 "#;
 
-        let real_input = include_str!(
-            "../inputs/day05.txt"
-        );
+        let real_input =
+            include_str!("../inputs/day05.txt");
 
-        assert_eq!(
-            part1(EXAMPLE_INPUT1),
-            35
-        );
+        assert_eq!(part1(EXAMPLE_INPUT1), 35);
         // assert_eq!(part1(real_input), 21821);
 
         // assert_eq!(part2(EXAMPLE_INPUT1), 30);

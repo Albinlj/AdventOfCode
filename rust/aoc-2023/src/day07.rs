@@ -217,7 +217,7 @@ fn part2(input: &str) -> u32 {
         }
     });
 
-    dbg!(&draws);
+    
 
     draws
         .iter()

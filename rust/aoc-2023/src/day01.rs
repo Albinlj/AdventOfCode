@@ -33,8 +33,6 @@ fn part2(input: &str) -> u32 {
         let mut digits: Vec<u32> = Vec::new();
 
         for (i, ch) in line.chars().enumerate() {
-            dbg!(ch);
-
             match ch.to_digit(10) {
                 Some(d) => {
                     digitcount += 1;
@@ -104,7 +102,8 @@ zoneight234
 7pqrstsixteen
 "#;
 
-        let real_input = include_str!("../inputs/day01.txt");
+        let real_input =
+            include_str!("../inputs/day01.txt");
 
         assert_eq!(part1(EXAMPLE_INPUT1), 142);
         assert_eq!(part1(real_input), 56049);

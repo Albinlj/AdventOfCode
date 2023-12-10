@@ -16,14 +16,20 @@ struct Symbol {
 }
 
 fn part1(input: &str) -> i32 {
-    let width: i32 = input.trim().find(('\n')).unwrap().try_into().unwrap();
-    dbg!(width);
+    let width: i32 = input
+        .trim()
+        .find(('\n'))
+        .unwrap()
+        .try_into()
+        .unwrap();
 
     lazy_static! {
-        static ref REGEX_SYMBOLS: Regex = Regex::new(r"([^.\n\w])").unwrap();
+        static ref REGEX_SYMBOLS: Regex =
+            Regex::new(r"([^.\n\w])").unwrap();
     }
     lazy_static! {
-        static ref REGEX_NUMBERS: Regex = Regex::new(r"(\w+)").unwrap();
+        static ref REGEX_NUMBERS: Regex =
+            Regex::new(r"(\w+)").unwrap();
     }
 
     let mut symbols: Vec<Symbol> = vec![];
@@ -36,33 +42,35 @@ fn part1(input: &str) -> i32 {
     for capture in symbol_matches {
         symbols.push(Symbol {
             x: capture.start() as i32 % width,
-            y: (capture.start() as f32 / width as f32).floor() as i32,
+            y: (capture.start() as f32 / width as f32)
+                .floor() as i32,
         });
     }
 
     let binding = input;
     let cleaned = &binding.trim().replace('\n', ".");
-    dbg!(cleaned);
 
     let number_matches = REGEX_NUMBERS.find_iter(cleaned);
     for capture in number_matches {
         numbers.push(Number {
             x: capture.start() as i32 % (width + 1),
-            y: (capture.start() as f32 / (width + 1) as f32).floor() as i32,
+            y: (capture.start() as f32 / (width + 1) as f32)
+                .floor() as i32,
             number: capture.as_str().parse().unwrap(),
         });
     }
 
     let mut sum = 0;
-    dbg!(&numbers);
-    dbg!(&symbols);
 
     for number in &numbers {
         'symbs: for symbol in &symbols {
             if (symbol.y >= (number.y - 1)
                 && symbol.y <= (number.y + 1)
                 && symbol.x >= (number.x - 1)
-                && symbol.x <= (number.x + number.number.to_string().len() as i32))
+                && symbol.x
+                    <= (number.x
+                        + number.number.to_string().len()
+                            as i32))
             {
                 sum += number.number;
                 break 'symbs;
@@ -72,14 +80,20 @@ fn part1(input: &str) -> i32 {
     sum
 }
 fn part2(input: &str) -> i32 {
-    let width: i32 = input.trim().find(('\n')).unwrap().try_into().unwrap();
-    dbg!(width);
+    let width: i32 = input
+        .trim()
+        .find(('\n'))
+        .unwrap()
+        .try_into()
+        .unwrap();
 
     lazy_static! {
-        static ref REGEX_SYMBOLS: Regex = Regex::new(r"([^.\n\w])").unwrap();
+        static ref REGEX_SYMBOLS: Regex =
+            Regex::new(r"([^.\n\w])").unwrap();
     }
     lazy_static! {
-        static ref REGEX_NUMBERS: Regex = Regex::new(r"(\w+)").unwrap();
+        static ref REGEX_NUMBERS: Regex =
+            Regex::new(r"(\w+)").unwrap();
     }
 
     let mut symbols: Vec<Symbol> = vec![];
@@ -93,27 +107,26 @@ fn part2(input: &str) -> i32 {
         if (capture.as_str() == "*") {
             symbols.push(Symbol {
                 x: capture.start() as i32 % width,
-                y: (capture.start() as f32 / width as f32).floor() as i32,
+                y: (capture.start() as f32 / width as f32)
+                    .floor() as i32,
             });
         }
     }
 
     let binding = input;
     let cleaned = &binding.trim().replace('\n', ".");
-    dbg!(cleaned);
 
     let number_matches = REGEX_NUMBERS.find_iter(cleaned);
     for capture in number_matches {
         numbers.push(Number {
             x: capture.start() as i32 % (width + 1),
-            y: (capture.start() as f32 / (width + 1) as f32).floor() as i32,
+            y: (capture.start() as f32 / (width + 1) as f32)
+                .floor() as i32,
             number: capture.as_str().parse().unwrap(),
         });
     }
 
     let mut sum = 0;
-    dbg!(&numbers);
-    dbg!(&symbols);
 
     for symbol in &symbols {
         let mut num1 = 0;
@@ -122,7 +135,10 @@ fn part2(input: &str) -> i32 {
             if (symbol.y >= (number.y - 1)
                 && symbol.y <= (number.y + 1)
                 && symbol.x >= (number.x - 1)
-                && symbol.x <= (number.x + number.number.to_string().len() as i32))
+                && symbol.x
+                    <= (number.x
+                        + number.number.to_string().len()
+                            as i32))
             {
                 if (num1 != 0) {
                     sum += num1 * number.number
@@ -154,7 +170,8 @@ mod tests {
 .664.598..
 "#;
 
-        let real_input = include_str!("../inputs/day03.txt");
+        let real_input =
+            include_str!("../inputs/day03.txt");
         assert_eq!(part1(EXAMPLE_INPUT1), 4361);
         assert_eq!(part1(real_input), 556367);
 
