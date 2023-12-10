@@ -10,12 +10,12 @@ struct Map {
 
 #[derive(Debug)]
 struct Range {
-    source_range_start: u32,
-    destination_range_start: u32,
-    range_size: u32,
+    source_range_start: u64,
+    destination_range_start: u64,
+    range_size: u64,
 }
 
-fn part1(input: &str) -> u32 {
+fn part1(input: &str) -> u64 {
     let (seeds, maps) =
         input.trim().split_once("\n\n").unwrap();
 
@@ -23,9 +23,53 @@ fn part1(input: &str) -> u32 {
         .strip_prefix("seeds: ")
         .unwrap()
         .split_whitespace()
-        .map(|num| num.parse::<u32>().unwrap())
+        .map(|num| num.parse::<u64>().unwrap())
         .collect_vec();
 
+    let maps = parse_maps(maps);
+
+    let locations = seeds
+        .iter()
+        .map(|seed| {
+            let mut from = seed.clone();
+
+            for map in &maps {
+                let range =
+                    &map.ranges.iter().find(|range| {
+                        range.source_range_start <= from
+                            && from.clone()
+                                <= range.source_range_start
+                                    + range.range_size
+                    });
+
+                let dit = match range {
+                    Some(range) => {
+                        from + range.destination_range_start
+                            - range.source_range_start
+                    }
+                    None => from.clone(),
+                };
+
+                from = dit.clone();
+            }
+
+            from
+
+            // (num, &map.to)
+        })
+        .collect_vec();
+
+    locations
+        .iter()
+        .sorted()
+        .collect_vec()
+        .first()
+        .unwrap()
+        .clone()
+        .clone()
+}
+
+fn parse_maps(maps: &str) -> Vec<Map> {
     let maps = maps
         .split("\n\n")
         .map(|section| {
@@ -41,12 +85,13 @@ fn part1(input: &str) -> u32 {
                 .lines()
                 .map(|line| line.split_whitespace())
                 .map(|mut a| Range {
-                    source_range_start: a
+                    destination_range_start: a
                         .next()
                         .unwrap()
                         .parse()
                         .unwrap(),
-                    destination_range_start: a
+
+                    source_range_start: a
                         .next()
                         .unwrap()
                         .parse()
@@ -68,35 +113,78 @@ fn part1(input: &str) -> u32 {
             map
         })
         .collect_vec();
-
-    let locations =
-        seeds.iter().map(|seed| {}).collect_vec();
-
-    2
+    maps
 }
 
-fn do_the_stuff(
-    from: &str,
-    number: u32,
-    maps: &Vec<Map>,
-) -> (u32, &str) {
-    let map =
-        &maps.iter().find(|map| map.from == from).unwrap();
+fn part2(input: &str) -> u64 {
+    let (seeds, maps) =
+        input.trim().split_once("\n\n").unwrap();
 
-    let dit = &map.ranges.iter().find(|range| {
-        range.source_range_start <= number
-            && number
-                <= range.source_range_start
-                    + range.range_size
-    });
+    let seeds = seeds
+        .strip_prefix("seeds: ")
+        .unwrap()
+        .split_whitespace()
+        .map(|num| num.parse::<u64>().unwrap().clone())
+        .collect_vec();
 
-    // let num = match dit {
-    //     Some() => {},
-    //     None => {},
-    // };
-    let num = 32;
+    let seed_ranges = seeds
+        .chunks(2)
+        .into_iter()
+        .collect_vec()
+        .iter()
+        .map(|chunk| {
+            let a = chunk.first().unwrap();
+            let b = chunk.last().unwrap();
 
-    (num, &map.to)
+            let mut strut =
+                vec![a.clone(), &a.clone() + &b.clone()];
+            strut.sort();
+            strut
+        })
+        .collect_vec();
+
+    let maps = parse_maps(maps);
+
+    let mut testing = 0;
+
+    loop {
+        let mut to = testing;
+        for map in maps.iter().rev() {
+            //
+            //
+            let range = &map.ranges.iter().find(|range| {
+                range.destination_range_start <= to
+                    && to
+                        <= range.destination_range_start
+                            + range.range_size
+            });
+
+            match range {
+                Some(range) => {
+                    to = to + range.source_range_start
+                        - range.destination_range_start
+                }
+                None => {}
+            };
+        }
+
+        match (seed_ranges.clone().into_iter().find(
+            |chunk| {
+                //
+                chunk.first().unwrap() <= &&to
+                    && &to <= chunk.last().unwrap()
+            },
+        )) {
+            Some(_) => return testing,
+            None => {}
+        }
+
+        // if testing == 0 {
+        //     panic!()
+        // }
+
+        testing += 1;
+    }
 }
 
 #[cfg(test)]
@@ -145,8 +233,11 @@ humidity-to-location map:
             include_str!("../inputs/day05.txt");
 
         assert_eq!(part1(EXAMPLE_INPUT1), 35);
-        // assert_eq!(part1(real_input), 21821);
+        assert_eq!(part1(real_input), 462648396);
 
+        assert_eq!(part2(EXAMPLE_INPUT1), 46);
+        assert_eq!(part2(real_input), 46);
+        // assert_eq!(part2(real_input), 462648396);
         // assert_eq!(part2(EXAMPLE_INPUT1), 30);
         // assert_eq!(part2(real_input), 5539496);
     }
