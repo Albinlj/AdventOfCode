@@ -236,7 +236,7 @@ humidity-to-location map:
         assert_eq!(part1(real_input), 462648396);
 
         assert_eq!(part2(EXAMPLE_INPUT1), 46);
-        assert_eq!(part2(real_input), 46);
+        assert_eq!(part2(real_input), 2520479);
         // assert_eq!(part2(real_input), 462648396);
         // assert_eq!(part2(EXAMPLE_INPUT1), 30);
         // assert_eq!(part2(real_input), 5539496);
