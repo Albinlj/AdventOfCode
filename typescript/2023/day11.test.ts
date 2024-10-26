@@ -23,7 +23,9 @@ const input = await Bun.file(
 ).text()
 
 test('part1', () => {
-  expect(part1(input)).toBe(374)
+  expect(part1(input)).toBe(
+    357134560737
+  )
 })
 
 const part1 = (input: string) => {
