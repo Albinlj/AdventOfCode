@@ -16,27 +16,26 @@ const example = `
 `
 
 test('day07', () => {
-  // expect(part1(example)).toBe(3749)
-  expect(part1(input)).toBe(932137732557)
+  expect(solve(example)).toBe(3749)
+  expect(solve(input)).toBe(932137732557)
+  expect(solve(example, true)).toBe(11387)
+  expect(solve(input, true)).toBe(661823605105500)
 })
 
-const part1 = (input: string) => {
+const solve = (input: string, isPart2: boolean = false) => {
   const equations = input
     .trim()
     .split('\n')
     .map((line) => {
       const [_result, _nums] = line.split(': ')
-
       const result = parseInt(_result)
       const nums = _nums
         .split(' ')
         .map((num) => parseInt(num))
-
       return { result, nums }
     })
 
   let working: number[] = []
-
   const recurse = (
     current: number,
     nums: number[],
@@ -55,11 +54,12 @@ const part1 = (input: string) => {
       const remaining = nums.slice(1)
       recurse(current + next, remaining, goal)
       recurse(current * next, remaining, goal)
-      recurse(
-        parseInt('' + current + next),
-        remaining,
-        goal
-      )
+      if (isPart2)
+        recurse(
+          parseInt('' + current + next),
+          remaining,
+          goal
+        )
     }
   }
 
@@ -68,5 +68,4 @@ const part1 = (input: string) => {
   }
 
   return working.reduce((a, b) => a + b)
-  // return working
 }

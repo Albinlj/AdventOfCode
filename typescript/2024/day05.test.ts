@@ -95,86 +95,27 @@ const part2 = (input: string) => {
       line.split(',').map((num) => parseInt(num))
     )
 
-  const incorrect = updates
-    .filter((update) =>
-      update.some((page, i, update) => {
-        for (const [before, after] of rules) {
-          if (page === before) {
-            const other = update.indexOf(after)
-            if (other !== -1 && other < i) {
-              return true
-            }
-          }
-          if (page === after) {
-            const other = update.indexOf(before)
-            if (other !== -1 && other > i) {
-              return true
-            }
+  const correct = updates.filter((update) =>
+    update.every((page, i, update) => {
+      for (const [before, after] of rules) {
+        if (page === before) {
+          const other = update.indexOf(after)
+          if (other !== -1 && other < i) {
+            return false
           }
         }
-        return false
-      })
-    )
-    .slice(0, 1)
-
-  const doStuff = (
-    current: number[],
-    rest: number[]
-  ): number[] | false => {
-    if (rest.length === 0) {
-      console.log(chalk.green('WOOOOOOOO'), current)
-      return current
-    }
-
-    const next = rest.at(0)
-    if (next === undefined) {
-      throw 'LOL'
-    }
-
-    let firstIndex = 0
-    let lastIndex = current.length
-
-    for (const [a, b] of rules) {
-      if (a === next) {
-        console.log('rule', a, b)
-        firstIndex = Math.max(
-          firstIndex,
-          current.lastIndexOf(b)
-        )
-      }
-      if (b === next) {
-        console.log('rule', a, b)
-        const bFound = current.lastIndexOf(b)
-        if (bFound > -1) {
-          lastIndex = Math.min(lastIndex, bFound)
+        if (page === after) {
+          const other = update.indexOf(before)
+          if (other !== -1 && other > i) {
+            return false
+          }
         }
       }
-    }
+      return true
+    })
+  )
 
-    if (firstIndex > lastIndex) {
-      return false
-    }
-
-    console.log({ current, next, firstIndex, lastIndex })
-
-    for (let i = lastIndex; i >= firstIndex; i--) {
-      const result = doStuff(
-        current.toSpliced(i, 0, next),
-        rest.slice(1)
-      )
-
-      if (result) {
-        return result
-      }
-    }
-    return false
-  }
-
-  const corrected = incorrect.map((update) => {
-    return doStuff([], update)
-  })
-
-  return corrected
+  return correct
     .map(
       (update) => update.at(Math.floor(update.length / 2))!
     )
