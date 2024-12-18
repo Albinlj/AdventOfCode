@@ -16,71 +16,84 @@ Register C: 0
 Program: 0,1,5,4,3,0
 `
 
+const example2 = `
+Register A: 2024
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0`
+
 test('day17', () => {
-  // expect(runProgram(0, 0, 9, [2, 6])).toMatchObject({ b: 1 })
-  // expect(runProgram(10, 0, 0, [5, 0, 5, 1, 5, 4])).toMatchObject({
-  //   out: [0, 1, 2],
-  // })
-  // expect(runProgram(2024, 0, 0, [0, 1, 5, 4, 3, 0])).toMatchObject({
-  //   out: [4, 2, 5, 6, 7, 7, 7, 7, 3, 1, 0],
-  //   a: 0,
-  // })
-  // expect(runProgram(0, 29, 0, [1, 7])).toMatchObject({
-  //   b: 26,
-  // })
-  // expect(runProgram(0, 2024, 43690, [4, 0])).toMatchObject({
-  //   b: 44354,
-  // })
-
-  // expect(part1(example)).toEqual('4635635210')
+  expect(part1(example)).toEqual('4635635210')
   expect(part1(input)).toEqual('6,5,7,4,5,7,3,1,0')
-  //657457310 no
-})
 
-const part1 = (input: string) => {
+  expect(part2(example2)).toEqual(117440)
+  expect(part2(input)).toEqual(105875099912602)
+})
+const parse = (input: string) => {
   const [_registers, _program] = input.trim().split('\n\n')
 
   const [a, b, c] = _registers
     .split('\n')
-    .map((line) => parseInt(line.split(': ')[1]))
+    .map((line) => BigInt(line.split(': ')[1]))
 
   const program = _program
     .trim()
     .split(': ')[1]
     .split(',')
-    .map((a) => parseInt(a.trim()))
+    .map((a) => BigInt(a.trim()))
 
+  return { a, b, c, program }
+}
+
+const part1 = (input: string) => {
+  const { a, b, c, program } = parse(input)
   const { out } = runProgram(a, b, c, program)
-
   return out.join(',')
 }
 
-const runProgram = (_a: number, _b: number, _c: number, program: number[]) => {
+const part2 = (input: string) => {
+  const { b, c, program } = parse(input)
+
+  let i = Math.pow(8, program.length - 1)
+  lol: while (true) {
+    const { out } = runProgram(BigInt(i), b, c, program)
+
+    for (let j = program.length - 1; j >= 0; j--) {
+      if (program[j] !== out[j]) {
+        let more = j > 1 ? Math.pow(8, j - 1) : 1
+        i += more
+        i = i - (i % more)
+        continue lol
+      }
+    }
+
+    return i
+  }
+}
+
+const runProgram = (_a: bigint, _b: bigint, _c: bigint, program: bigint[]) => {
   let a = _a
   let b = _b
   let c = _c
   let out = []
 
-  const combo = (operand: number): number => {
+  const comboOperand = (operand: bigint): bigint => {
     switch (operand) {
-      case 0:
-      case 1:
-      case 2:
-      case 3:
-        return operand
-      case 4:
+      case 4n:
         return a
-      case 5:
+      case 5n:
         return b
-      case 6:
+      case 6n:
         return c
+      default:
+        return operand
     }
-    throw 'NO'
   }
 
-  const div = (operand: number) => {
-    const denominator = Math.pow(2, combo(operand))
-    return Math.floor(a / denominator)
+  const divOp = (operand: bigint) => {
+    const denominator = 2n ** comboOperand(operand)
+    return a / denominator
   }
 
   let pointer = 0
@@ -90,30 +103,30 @@ const runProgram = (_a: number, _b: number, _c: number, program: number[]) => {
     const operand = program[pointer + 1]
 
     switch (opcode) {
-      case 0: //adv
-        a = div(operand)
+      case 0n: //adv
+        a = divOp(operand)
         break
-      case 1: //bxl
+      case 1n: //bxl
         b = b ^ operand
         break
-      case 2: //bst
-        b = combo(operand) % 8
+      case 2n: //bst
+        b = comboOperand(operand) % 8n
         break
-      case 3: //jnz
-        if (a === 0) break
-        pointer = operand
+      case 3n: //jnz
+        if (a === 0n) break
+        pointer = Number(operand)
         continue
-      case 4: //bxc
+      case 4n: //bxc
         b = b ^ c
         break
-      case 5: //out
-        out.push(combo(operand) % 8)
+      case 5n: //out
+        out.push(comboOperand(operand) % 8n)
         break
-      case 6: //bdv
-        b = div(operand)
+      case 6n: //bdv
+        b = divOp(operand)
         break
-      case 7: //cdv
-        c = div(operand)
+      case 7n: //cdv
+        c = divOp(operand)
         break
       default:
         break
