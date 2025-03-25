@@ -1,5 +1,4 @@
 import { expect, test } from 'bun:test'
-import chalk from 'chalk'
 
 const input = await Bun.file('day05.input.txt').text()
 
@@ -33,91 +32,97 @@ const example = `47|53
 97,13,75,29,47`
 
 test('day05', () => {
-  // expect(part1(example)).toBe(143)
-  // expect(part1(input)).toBe(7024)
+  expect(part1(example)).toBe(143)
+  expect(part1(input)).toBe(7024)
+
   expect(part2(example)).toBe(123)
+  expect(part2(input)).toBe(7024)
 })
 
 const part1 = (input: string) => {
-  const [_rules, _updates] = input.trim().split('\n\n')
+  const { updates, rules } = parse(input)
+  const correct = updates.filter((update) => isCorrect(update, rules))
 
-  const rules = _rules
-    .split('\n')
-    .map((line) =>
-      line.split('|').map((num) => parseInt(num))
-    )
-
-  const updates = _updates
-    .split('\n')
-    .map((line) =>
-      line.split(',').map((num) => parseInt(num))
-    )
-
-  const correct = updates.filter((update) =>
-    update.every((page, i, update) => {
-      for (const [before, after] of rules) {
-        if (page === before) {
-          const other = update.indexOf(after)
-          if (other !== -1 && other < i) {
-            return false
-          }
-        }
-        if (page === after) {
-          const other = update.indexOf(before)
-          if (other !== -1 && other > i) {
-            return false
-          }
-        }
-      }
-      return true
-    })
-  )
-
-  return correct
-    .map(
-      (update) => update.at(Math.floor(update.length / 2))!
-    )
-    .reduce((a, b) => a + b)
+  return calculateSumOfMiddlePages(correct)
 }
 
 const part2 = (input: string) => {
+  const { updates, rules } = parse(input)
+  const incorrect = updates.filter((update) => !isCorrect(update, rules))
+
+  const correcteds = incorrect.map((inc) => {
+    let corrected = structuredClone(inc)
+
+    do {
+      lol: for (let i = 0; i < corrected.length; i++) {
+        const page = corrected[i]
+
+        for (const [before, after] of rules) {
+          if (page === before) {
+            const afterIndex = corrected.indexOf(after)
+            if (afterIndex !== -1 && afterIndex < i) {
+              console.log('CHANGE A')
+              corrected.splice(i + 1, 0, after)
+              corrected.splice(afterIndex, 1)
+              break lol
+            }
+          }
+          if (page === after) {
+            const beforeIndex = corrected.indexOf(before)
+            if (beforeIndex !== -1 && beforeIndex > i) {
+              console.log('CHANGE B', page, after)
+              corrected.splice(beforeIndex, 1)
+              corrected.splice(i, 0, before)
+
+              break lol
+            }
+          }
+        }
+      }
+    } while (!isCorrect(corrected, rules))
+
+    return corrected
+  })
+
+  return calculateSumOfMiddlePages(correcteds)
+}
+
+function calculateSumOfMiddlePages(correct: number[][]) {
+  return correct
+    .map((update) => update.at(Math.floor(update.length / 2))!)
+    .reduce((a, b) => a + b)
+}
+
+function parse(input: string) {
   const [_rules, _updates] = input.trim().split('\n\n')
 
   const rules = _rules
     .split('\n')
-    .map((line) =>
-      line.split('|').map((num) => parseInt(num))
-    )
+    .map((line) => line.split('|').map((num) => parseInt(num)))
 
   const updates = _updates
     .split('\n')
-    .map((line) =>
-      line.split(',').map((num) => parseInt(num))
-    )
+    .map((line) => line.split(',').map((num) => parseInt(num)))
 
-  const correct = updates.filter((update) =>
-    update.every((page, i, update) => {
-      for (const [before, after] of rules) {
-        if (page === before) {
-          const other = update.indexOf(after)
-          if (other !== -1 && other < i) {
-            return false
-          }
-        }
-        if (page === after) {
-          const other = update.indexOf(before)
-          if (other !== -1 && other > i) {
-            return false
-          }
+  return { updates, rules }
+}
+
+function isCorrect(update: number[], rules: number[][]) {
+  return update.every((page, i, update) => {
+    for (const [before, after] of rules) {
+      if (page === before) {
+        const other = update.indexOf(after)
+        if (other !== -1 && other < i) {
+          return false
         }
       }
-      return true
-    })
-  )
-
-  return correct
-    .map(
-      (update) => update.at(Math.floor(update.length / 2))!
-    )
-    .reduce((a, b) => a + b)
+      if (page === after) {
+        const other = update.indexOf(before)
+        if (other !== -1 && other > i) {
+          return false
+        }
+      }
+    }
+    return true
+  })
 }
