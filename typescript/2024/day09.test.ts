@@ -9,6 +9,7 @@ test('day09', () => {
   expect(part1(example)).toBe(1928)
   expect(part1(input)).toBe(6448989155953)
   expect(part2(example)).toBe(2858)
+  expect(part2('9953877292941')).toBe(5768)
   expect(part2(input)).toBe(6476642796832)
 })
 
