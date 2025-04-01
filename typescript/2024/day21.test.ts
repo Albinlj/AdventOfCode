@@ -1,6 +1,4 @@
 import { expect, test } from 'bun:test'
-import { countBy } from 'lodash'
-import { init, insert } from 'ramda'
 
 const example = `
 029A
@@ -19,10 +17,9 @@ const input = `
 `
 
 test('day20', () => {
-  expect(computeDirection('7', '6')).toEqual(['v>>', '>>v'])
-
   expect(calculateCodeComplexity('029A')).toEqual(68 * 29)
   expect(part1(example)).toEqual(126384)
+  expect(part1(input)).toEqual(182844)
 })
 
 const part1 = (input: string) =>
@@ -33,57 +30,92 @@ const part1 = (input: string) =>
     .reduce((a, b) => a + b)
 
 const calculateCodeComplexity = (code: string) => {
-  // get which buttons needs to be pressed
+  const numberMap = createMap(numberCoords)
+  const arrowMap = createMap(arrowCoords)
 
-  const myButtons = '><A.A>A.a.a>AA'
+  let paths = getPaths(code, numberMap)
+  let paths2 = paths.flatMap((path) => getPaths(path, arrowMap))
+  let paths3 = paths2.flatMap((path) => getPaths(path, arrowMap))
 
-  return myButtons.length * parseInt(code.slice(0, -1))
+  const shortestSequenceLength = paths3
+    .map((p) => p.length)
+    .sort()
+    .at(0)!
+  return shortestSequenceLength * parseInt(code.slice(0, -1))
 }
 
-// const map = {
-//   A0: ['<'],
-//   A1: ['^<<'],
-//   A2: ['^<'],
-//   A3: ['^'],
-//   A4: ['^^<<'],
-//   A5: ['^^<', '<^^'],
-//   A6: ['^^'],
-//   A7: ['^^^<<'],
-//   A8: ['^^^<'],
-//   A9: ['^^^'],
-//   '0A': ['>'],
-// }
+const createMap = (keypad: Keypad) => {
+  const map = keypad.flatMap(([key1, [y1, x1]]) =>
+    keypad.map(([key2, [y2, x2]]) => {
+      const moves: string[] = []
+      if (y1 < y2) moves.push('v'.repeat(y2 - y1))
+      if (y1 > y2) moves.push('^'.repeat(y1 - y2))
+      if (x1 < x2) moves.push('>'.repeat(x2 - x1))
+      if (x1 > x2) moves.push('<'.repeat(x1 - x2))
+      const moveString = moves.join('')
+      const rev = moveString.split('').reverse().join('')
 
-interface Position {
-  row: number
-  col: number
+      const stringMoves = [...new Set([moveString, rev])].filter((moves) =>
+        isValid(moves, y1, x1, keypad)
+      )
+
+      return [`${key1}${key2}`, stringMoves] as const
+    })
+  )
+  return Object.fromEntries(map)
 }
-
-const positions: Record<string, Position> = {
-  '7': { row: 0, col: 0 },
-  '8': { row: 0, col: 1 },
-  '9': { row: 0, col: 2 },
-  '4': { row: 1, col: 0 },
-  '5': { row: 1, col: 1 },
-  '6': { row: 1, col: 2 },
-  '1': { row: 2, col: 0 },
-  '2': { row: 2, col: 1 },
-  '3': { row: 2, col: 2 },
-  '0': { row: 3, col: 1 },
-  A: { row: 3, col: 2 },
-}
-
-function computeDirection(from: string, to: string): string[] {
-  const dr: number = positions[to].row - positions[from].row
-  const dc: number = positions[to].col - positions[from].col
-  const vertical: string =
-    dr < 0 ? '^'.repeat(-dr) : dr > 0 ? 'v'.repeat(dr) : ''
-  const horizontal: string =
-    dc < 0 ? '<'.repeat(-dc) : dc > 0 ? '>'.repeat(dc) : ''
-
-  // Return both possible orders if both vertical and horizontal moves are required.
-  if (vertical && horizontal) {
-    return [vertical + horizontal, horizontal + vertical]
+function getPaths(code: string, numberMap: { [k: string]: string[] }) {
+  let pos = 'A'
+  let paths = ['']
+  for (const digit of code) {
+    const moves = numberMap[pos + digit]
+    paths = paths.flatMap((p) => moves.map((m) => p + m + 'A'))
+    pos = digit
   }
-  return [vertical + horizontal]
+  return paths
 }
+
+function isValid(
+  moves: string,
+  y1: number,
+  x1: number,
+  keypad: Keypad
+): boolean {
+  const validCoords = keypad.map(([key, coords]) => coords)
+
+  for (const move of moves) {
+    if (move === '<') x1--
+    if (move === '>') x1++
+    if (move === '^') y1--
+    if (move === 'v') y1++
+
+    if (!validCoords.some(([vy, vx]) => vy == y1 && vx == x1)) {
+      return false
+    }
+  }
+  return true
+}
+
+type Keypad = [string, [number, number]][]
+
+const numberCoords: Keypad = [
+  ['7', [0, 0]],
+  ['8', [0, 1]],
+  ['9', [0, 2]],
+  ['4', [1, 0]],
+  ['5', [1, 1]],
+  ['6', [1, 2]],
+  ['1', [2, 0]],
+  ['2', [2, 1]],
+  ['3', [2, 2]],
+  ['0', [3, 1]],
+  ['A', [3, 2]],
+]
+
+const arrowCoords: Keypad = [
+  ['^', [0, 1]],
+  ['<', [1, 0]],
+  ['v', [1, 1]],
+  ['>', [1, 2]],
+  ['A', [0, 2]],
+]

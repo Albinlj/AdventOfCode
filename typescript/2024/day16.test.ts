@@ -213,22 +213,3 @@ function parse(input: string) {
     )
     .filter(({ ch }) => ch !== '#')
 }
-
-function print(best: Set<unknown>) {
-  for (let y = 0; y < 15; y++) {
-    let string = ''
-    for (let x = 0; x < 15; x++) {
-      if (
-        best
-          .values()
-          .toArray()
-          .some((b) => b.x === x && b.y === y)
-      ) {
-        string += 'O'
-      } else {
-        string += ' '
-      }
-    }
-    console.log(string)
-  }
-}
