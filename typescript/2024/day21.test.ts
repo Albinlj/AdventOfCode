@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test'
+import { memoize } from 'lodash'
 
 const example = `
 029A
@@ -16,33 +17,84 @@ const input = `
 283A
 `
 
-test('day20', () => {
-  expect(calculateCodeComplexity('029A')).toEqual(68 * 29)
+test('day21', () => {
+  const a = '<A^A>^^AvvvA'
+  const b = 'v<<A>>^A<A>AvA<^AA>A<vAAA>^A'
+  const c =
+    '<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'
+
   expect(part1(example)).toEqual(126384)
   expect(part1(input)).toEqual(182844)
+
+  expect(findLeastPresses(a, 1)).toEqual(b.length)
+  expect(findLeastPresses(b, 1)).toEqual(c.length)
+  expect(findLeastPresses(a, 2)).toEqual(c.length)
+
+  expect(regex('vA')).toEqual(['vA'])
+  expect(regex('vAA')).toEqual(['vA', 'A'])
+  expect(regex('vAAA')).toEqual(['vA', 'A', 'A'])
+  expect(regex('vA<A')).toEqual(['vA', '<A'])
+
+  expect(part2(example, 2)).toEqual(126384)
+  expect(part2(input, 2)).toEqual(182844)
+  expect(part2(input, 25)).toBeLessThan(467772158891270)
+  expect(part2(input, 25)).toBeLessThan(233717465446404)
+  expect(part2(input, 25)).not.toEqual(229907352346380)
+  expect(part2(input, 25)).not.toEqual(91994758347446)
+  expect(part2(input, 25)).toEqual(0)
 })
+
+const findLeastPresses = memoize(
+  (move: string, depth: number): number => {
+    if (depth == 0) {
+      return move.length
+    }
+
+    const arr = regex(move)
+    if (arr.length > 1) {
+      return arr.map((a) => findLeastPresses(a, depth)).reduce((a, b) => a + b)
+    } else {
+      return getPaths(arr.at(0)!, arrowMap)
+        .map((seq) => findLeastPresses(seq, depth - 1))
+        .sort((a, b) => a - b)
+        .at(0)!
+    }
+  },
+  (move, depth) => move + depth
+)
 
 const part1 = (input: string) =>
   input
     .trim()
     .split('\n')
-    .map(calculateCodeComplexity)
+    .map((code: string) => {
+      let paths = getPaths(code, numberMap)
+      let paths2 = paths.flatMap((path) => getPaths(path, arrowMap))
+      let paths3 = paths2.flatMap((path) => getPaths(path, arrowMap))
+
+      const shortestSequenceLength = paths3
+        .map((p) => p.length)
+        .sort((a, b) => a - b)
+        .at(0)!
+      return shortestSequenceLength * parseInt(code.slice(0, -1))
+    })
     .reduce((a, b) => a + b)
 
-const calculateCodeComplexity = (code: string) => {
-  const numberMap = createMap(numberCoords)
-  const arrowMap = createMap(arrowCoords)
+const part2 = (input: string, depth: number) =>
+  input
+    .trim()
+    .split('\n')
+    .map((code: string) => {
+      let paths = getPaths(code, numberMap)
 
-  let paths = getPaths(code, numberMap)
-  let paths2 = paths.flatMap((path) => getPaths(path, arrowMap))
-  let paths3 = paths2.flatMap((path) => getPaths(path, arrowMap))
+      const leastPresses = paths
+        .map((path) => findLeastPresses(path, depth))
+        .sort((a, b) => a - b)
+        .at(0)!
 
-  const shortestSequenceLength = paths3
-    .map((p) => p.length)
-    .sort()
-    .at(0)!
-  return shortestSequenceLength * parseInt(code.slice(0, -1))
-}
+      return leastPresses * parseInt(code.slice(0, -1))
+    })
+    .reduce((a, b) => a + b)
 
 const createMap = (keypad: Keypad) => {
   const map = keypad.flatMap(([key1, [y1, x1]]) =>
@@ -64,6 +116,11 @@ const createMap = (keypad: Keypad) => {
   )
   return Object.fromEntries(map)
 }
+
+function regex(move: string) {
+  return move.match(/\D*?A/g) || []
+}
+
 function getPaths(code: string, numberMap: { [k: string]: string[] }) {
   let pos = 'A'
   let paths = ['']
@@ -119,3 +176,6 @@ const arrowCoords: Keypad = [
   ['>', [1, 2]],
   ['A', [0, 2]],
 ]
+
+const numberMap = createMap(numberCoords)
+const arrowMap = createMap(arrowCoords)
