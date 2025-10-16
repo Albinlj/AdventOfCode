@@ -56,8 +56,6 @@ const part1 = (input: string) => {
         const cx = b.x - deltaX
         const cy = b.y - deltaY
 
-        // console.log({ a, b, deltaX, deltaY, cx, cy })
-
         if (cx < width && cx >= 0 && cy < height && cy >= 0) {
           antiNodes.add('' + cx + ',' + cy)
         }
@@ -82,7 +80,7 @@ const part2 = (input: string) => {
   )
 
   const frequencies = new Set([...towers.map(({ ch }) => ch)])
-  console.log(frequencies)
+
   const antiNodes = new Set('')
 
   for (const frequency of frequencies) {
@@ -99,8 +97,6 @@ const part2 = (input: string) => {
 
         let nodeX = b.x
         let nodeY = b.y
-
-        // console.log({ a, b, deltaX, deltaY, cx, cy })
 
         while (nodeX < width && nodeX >= 0 && nodeY < height && nodeY >= 0) {
           antiNodes.add('' + nodeX + ',' + nodeY)

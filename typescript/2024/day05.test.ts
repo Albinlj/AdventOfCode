@@ -36,7 +36,7 @@ test('day05', () => {
   expect(part1(input)).toBe(7024)
 
   expect(part2(example)).toBe(123)
-  expect(part2(input)).toBe(7024)
+  expect(part2(input)).toBe(4151)
 })
 
 const part1 = (input: string) => {
@@ -61,7 +61,6 @@ const part2 = (input: string) => {
           if (page === before) {
             const afterIndex = corrected.indexOf(after)
             if (afterIndex !== -1 && afterIndex < i) {
-              console.log('CHANGE A')
               corrected.splice(i + 1, 0, after)
               corrected.splice(afterIndex, 1)
               break lol
@@ -70,7 +69,6 @@ const part2 = (input: string) => {
           if (page === after) {
             const beforeIndex = corrected.indexOf(before)
             if (beforeIndex !== -1 && beforeIndex > i) {
-              console.log('CHANGE B', page, after)
               corrected.splice(beforeIndex, 1)
               corrected.splice(i, 0, before)
 

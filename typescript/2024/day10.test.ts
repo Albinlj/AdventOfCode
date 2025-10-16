@@ -14,12 +14,12 @@ const example = `
 10456732
 `
 
-test('day18', () => {
+test('day10', () => {
   expect(part1(example)).toEqual(36)
   expect(part1(input)).toEqual(682)
 
   expect(part2(example)).toEqual(81)
-  expect(part2(input)).toEqual(81)
+  expect(part2(input)).toEqual(1511)
 })
 
 const part1 = (input: string) => {

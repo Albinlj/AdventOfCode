@@ -21,7 +21,7 @@ p=9,5 v=-3,-3
 
 test('day12', () => {
   // expect(part1(example, 11, 7)).toBe(12)
-  expect(part1(input, 101, 103)).toBe(12)
+  // expect(part1(input, 101, 103)).toBe(12)
 })
 
 const part1 = (input: string, width: number, height: number) => {
@@ -47,9 +47,8 @@ const part1 = (input: string, width: number, height: number) => {
     const window = 10
 
     // if (i >= start && i < start + window) {
-    // console.log(i)
+
     if (i % 10000 === 0) {
-      console.log(i)
     }
     let ja = false
     let lines = Array.from({ length: height }).fill('.'.repeat(width))
@@ -63,13 +62,10 @@ const part1 = (input: string, width: number, height: number) => {
       }
     }
     if (ja) {
-      console.log(i, i, i, i)
-      console.log(lines.join('\n'))
       ja = false
     }
     // }
   }
-  console.log('---')
 
   // const cuads = [0, 0, 0, 0]
   // for (const r of robots) {

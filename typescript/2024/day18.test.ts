@@ -36,7 +36,7 @@ test('day18', () => {
   expect(part1(input, 71, 71, 1024)).toBe(292)
 
   expect(part2(example, 7, 7)).toBe('6,1')
-  expect(part2(input, 71, 71)).toBe('6,1')
+  expect(part2(input, 71, 71)).toBe('58,44')
 })
 
 type Node = {

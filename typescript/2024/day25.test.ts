@@ -47,7 +47,7 @@ const example = `
 
 test('day20', () => {
   expect(part1(example)).toEqual(3)
-  expect(part1(input)).toEqual(3)
+  expect(part1(input)).toEqual(3508)
 })
 
 const part1 = (input: string) => {

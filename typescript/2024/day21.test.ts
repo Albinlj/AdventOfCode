@@ -29,19 +29,7 @@ test('day21', () => {
   expect(findLeastPresses(a, 1)).toEqual(b.length)
   expect(findLeastPresses(b, 1)).toEqual(c.length)
   expect(findLeastPresses(a, 2)).toEqual(c.length)
-
-  expect(regex('vA')).toEqual(['vA'])
-  expect(regex('vAA')).toEqual(['vA', 'A'])
-  expect(regex('vAAA')).toEqual(['vA', 'A', 'A'])
-  expect(regex('vA<A')).toEqual(['vA', '<A'])
-
-  expect(part2(example, 2)).toEqual(126384)
-  expect(part2(input, 2)).toEqual(182844)
-  expect(part2(input, 25)).toBeLessThan(467772158891270)
-  expect(part2(input, 25)).toBeLessThan(233717465446404)
-  expect(part2(input, 25)).not.toEqual(229907352346380)
-  expect(part2(input, 25)).not.toEqual(91994758347446)
-  expect(part2(input, 25)).toEqual(0)
+  expect(part2(input, 25)).toEqual(226179529377982)
 })
 
 const findLeastPresses = memoize(

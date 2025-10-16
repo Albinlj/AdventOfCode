@@ -28,7 +28,7 @@ test('day12', () => {
 
   expect(part2(example1)).toBe(80)
   expect(part2(example)).toBe(1206)
-  expect(part2(input)).toBe(1206)
+  expect(part2(input)).toBe(787680)
 })
 
 const part1 = (input: string) => {

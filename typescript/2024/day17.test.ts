@@ -24,7 +24,7 @@ Register C: 0
 Program: 0,3,5,4,3,0`
 
 test('day17', () => {
-  expect(part1(example)).toEqual('4635635210')
+  expect(part1(example)).toEqual('4,6,3,5,6,3,5,2,1,0')
   expect(part1(input)).toEqual('6,5,7,4,5,7,3,1,0')
 
   expect(part2(example2)).toEqual(117440)
