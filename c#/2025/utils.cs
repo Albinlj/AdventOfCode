@@ -6,9 +6,9 @@ public static class Utils
     {
         var projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
         var inputPath = Path.Combine(projectRoot, "inputs", filename);
-        var input = File.ReadAllText(inputPath);
-        var lines = input.Trim().Split('\n').Select(line => line.Trim()).ToArray();
-        return lines;
+        return File.ReadAllLines(inputPath)
+            .Select(line => line.Trim())
+            .ToArray();
     }
 }
 

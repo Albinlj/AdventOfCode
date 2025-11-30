@@ -1,0 +1,12 @@
+root = true
+
+[*.fs]
+# Fantomas settings for more line breaks
+fsharp_max_line_length = 40
+fsharp_newline_between_type_definition_and_members = true
+fsharp_blank_lines_around_nested_domain_expressions = true
+fsharp_multiline_block_brackets_on_same_column = false
+fsharp_align_function_signature_to_indentation = false
+fsharp_strict_mode = false
+
+
